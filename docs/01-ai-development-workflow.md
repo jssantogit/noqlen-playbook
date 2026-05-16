@@ -23,3 +23,7 @@ Opencode/Codex edits files, implements scoped blocks, runs tests, produces valid
 GitHub provides source history, issues, PRs, review, CI, releases, and durable documentation.
 
 Each tool has a bounded role. Planning does not imply implementation. Implementation does not imply release. Audits identify risk before the next block starts.
+
+## Retrospective Learning
+
+Past Noqlen repositories can be studied read-only to improve future prompts, examples, guardrails, and handoffs. The output should be sanitized workflow lessons, not copied private context or blame language. The question is: how would the current workflow handle this kind of change better now?

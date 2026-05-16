@@ -43,6 +43,10 @@ Use the smallest context that is safe for the task.
 
 Apps are control and experience layers over solid cores. Heavy domain logic belongs in cores, services, adapters, or explicit contracts, not in UI screens.
 
+## Learning From Local Repositories
+
+The playbook may study local Noqlen repositories read-only to extract reusable workflow lessons. This kind of study must produce sanitized observations only and must never copy private data, secrets, personal paths, lyrics, fingerprints, real library paths, or full local configuration files.
+
 ## Repository Map
 
 - `docs/`: workflow documentation.
