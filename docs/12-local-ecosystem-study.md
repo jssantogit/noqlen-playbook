@@ -13,6 +13,10 @@ The inspected repositories were not modified.
 - Noqlen Anchor Core.
 - Noqlen Aria Core as the more mature workflow reference.
 
+## Repositories Not Found
+
+- None. All expected local Noqlen repositories were available for read-only inspection.
+
 ## Sanitized Repository Summaries
 
 Noqlen Forge Core is a CLI/core foundation with a public CLI, Python package, service layer, Core API direction, docs, CI, tests, and release hardening material. It shows the importance of keeping a CLI thin while moving reusable behavior into service boundaries and structured results.
