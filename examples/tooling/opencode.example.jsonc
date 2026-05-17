@@ -1,0 +1,18 @@
+// Sanitized example only. Do not copy blindly into a real project.
+// Keep real provider credentials, auth paths, and personal settings out of repos.
+{
+  "$schema": "https://opencode.ai/config.json",
+  "share": "manual",
+  "permissions": {
+    "shell": "ask",
+    "write": "ask",
+    "network": "ask",
+    "commit": "ask",
+    "push": "deny"
+  },
+  "notes": [
+    "Prefer global/user-level config for real work.",
+    "Project-local config requires explicit approval.",
+    "Do not store provider keys or auth files here."
+  ]
+}

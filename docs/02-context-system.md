@@ -2,6 +2,12 @@
 
 Use the smallest context that is safe for the task.
 
+Optional tooling may help preserve small context. Context Mode may support context control during a pilot. Serena may support semantic retrieval to avoid reading entire files. RTK may reduce command output noise during exploration.
+
+Tooling does not change the definitions of tiny, standard, or full context.
+
+Raw evidence is still required when context reduction, output routing, or compression would otherwise hide failures, risks, assumptions, touched files, security findings, or stop conditions.
+
 ## Tiny Context
 
 - Current task.

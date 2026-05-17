@@ -15,3 +15,5 @@ Required rules:
 - UI errors must not expose private paths or sensitive data.
 
 Keep screen, state, and use-case responsibilities separate. Audit UI flows, data safety, and app/core boundaries before treating an app block as complete.
+
+Optional tooling can support app work inside the same boundaries. Serena can help inspect app/core boundaries. Context Mode and RTK can help reduce noisy logs during app validation. Terse-output must not be used for UX specs or audit reports.

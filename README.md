@@ -14,7 +14,7 @@ This repository is not the beginning of Noqlen. The ecosystem is already mostly 
 
 ## Default Loop
 
-Plan -> Block -> Prompt -> Implement -> Validate -> Audit -> Fix -> Commit -> Handoff -> Next block
+Plan -> Block -> Prompt -> Tool Mode -> Implement -> Validate -> Audit -> Fix -> Commit -> Handoff -> Next block
 
 ## Core Principles
 
@@ -39,6 +39,42 @@ Plan -> Block -> Prompt -> Implement -> Validate -> Audit -> Fix -> Commit -> Ha
 
 Use the smallest context that is safe for the task.
 
+## Workflow Accelerators
+
+The Noqlen workflow remains stable:
+
+Plan -> Block -> Prompt -> Tool Mode -> Implement -> Validate -> Audit -> Fix -> Commit -> Handoff -> Next block
+
+Workflow accelerators are optional and explicit. They improve navigation, context control, shell output handling, and CI guardrails, but they are not the workflow itself.
+
+Recommended baseline:
+
+1. OpenCode native capabilities.
+2. Serena read-only.
+3. RTK / Rust Token Killer for shell-heavy blocks.
+4. Context Mode as a pilot for long sessions.
+5. Caveman disabled by default.
+
+Tooling cannot bypass scoped blocks, specs, validation, audits, handoffs, repo hygiene, or human review.
+
+## Optimized Development Environment
+
+An optimized development environment may be prepared before coding when a handoff asks for it. Environment bootstrap is a separate block from product implementation unless explicitly requested otherwise.
+
+Prefer global or user-level tool setup. Project-local tooling config is exception-only and must not be committed unless explicitly approved and sanitized.
+
+## Tool Mode
+
+Every tool-assisted block declares Tool Mode. Use `none` when no optional accelerator affects the block. Use specific modes such as `native`, `serena-ro`, `rtk`, `context-mode`, or `combo` when tooling changes how the block is executed.
+
+Tool Mode documents operational support only. It does not reduce the required spec, validation, audit, handoff, or repository hygiene evidence.
+
+## Safety and Evidence
+
+Compressed, routed, or summarized output may help exploration, but it is not audit proof. Raw evidence is required for serious debugging, validation failures, audits, release readiness, boundary changes, and security-sensitive changes.
+
+Do not commit active local agent/tool configs, credentials, auth files, generated tool state, or personal paths. Version only sanitized `.example.*` files.
+
 ## App Development Rule
 
 Apps are control and experience layers over solid cores. Heavy domain logic belongs in cores, services, adapters, or explicit contracts, not in UI screens.
@@ -61,6 +97,6 @@ The playbook may study local Noqlen repositories read-only to extract reusable w
 ## Validation
 
 ```bash
-python scripts/validate_playbook_structure.py
-python scripts/check_repo_contamination.py
+python3 scripts/validate_playbook_structure.py
+python3 scripts/check_repo_contamination.py
 ```

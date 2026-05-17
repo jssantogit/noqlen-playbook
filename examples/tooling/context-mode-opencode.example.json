@@ -1,0 +1,14 @@
+{
+  "exampleOnly": true,
+  "description": "Sanitized Context Mode plus OpenCode pilot example. Verify support locally before use.",
+  "installScope": "user-global-preferred",
+  "opencodeSupport": "pilot-partial-until-validated",
+  "mcp": {
+    "context-mode": {
+      "transport": "local-stdio",
+      "command": "context-mode",
+      "args": []
+    }
+  },
+  "evidencePolicy": "Context Mode output is not final audit evidence by itself. Preserve raw evidence when required."
+}

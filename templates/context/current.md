@@ -6,6 +6,22 @@
 
 ## Context level
 
+## Tool Mode
+
+## Tooling Goal
+
+## Install Scope
+
+## Tool Permissions
+
+## Raw Evidence Required
+
+## Local Tooling Status
+
+## Forbidden Tooling Artifacts
+
+## Evidence Location
+
 ## Active block
 
 ## Active spec
