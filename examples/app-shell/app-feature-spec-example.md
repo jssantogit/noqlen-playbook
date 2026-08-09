@@ -1,30 +1,25 @@
-# App Feature Spec Example: Display Local Service Readiness Status
+# App Example: Readiness Status With A Real Boundary
 
-## App screen goal
+This example demonstrates a case where the **Fake Gate is justified**. It is not a required starting point for every app feature.
 
-Show whether a local service is ready, starting, unavailable, or in error.
+## Goal
 
-## State model
+Show whether an already-defined local service boundary is unknown, starting, ready, unavailable, or in error.
 
-- `unknown`
-- `starting`
-- `ready`
-- `unavailable`
-- `error`
+## Why A Fake Helps Here
 
-## Fake provider
+The app consumes a real service-readiness boundary. Starting and failing the real local service in every UI test would be slower and less deterministic, so tests use a lightweight fake implementation of the **existing** readiness boundary.
 
-Use a fake readiness provider that returns deterministic states for tests and demos.
+The boundary exists because the app and service are separate components — not because the playbook requires a fake.
 
-## Contract boundary
+## Verification
 
-The app depends on a public readiness contract, not internal service implementation details.
+- test state rendering with deterministic readiness states;
+- verify safe error text does not expose private paths or sensitive data;
+- run the relevant integration check against the real boundary separately when practical.
 
-## Validation
+## Gates
 
-- Validate state transitions with fake provider tests.
-- Validate UI errors do not expose private paths or sensitive data.
-
-## Audit
-
-Audit app/core boundaries, state behavior, and data safety before integration with a real provider.
+- Fake Gate: yes, because a real external/service boundary benefits from isolation.
+- Design Gate: only if the readiness contract itself changes materially.
+- Audit Gate: only if the public boundary or security/data risk warrants independent review.
