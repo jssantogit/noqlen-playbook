@@ -1,35 +1,36 @@
 # AGENTS
 
-- Read the relevant context before editing.
-- Work only on the requested block.
-- Do not perform broad rewrites.
-- Do not touch unrelated files.
-- Respect allowed and forbidden file lists.
-- Do not expose secrets, personal paths, or private data.
-- Do not use real music libraries in tests.
-- Prefer fake fixtures and dry-run flows.
-- Validate before claiming done.
-- Report touched files and commands run.
-- Always declare Tool Mode when tooling affects the block.
-- Do not install or configure agent tooling unless explicitly requested.
-- When asked to bootstrap an optimized environment, read the environment docs first.
-- Prefer user/global tool configuration over project-local config.
-- Do not commit local agent configs.
-- Do not create or commit `opencode.json` unless explicitly approved.
-- Do not commit `.opencode/`, `.serena/`, `.mcp/`, `.claude/`, `.cursor/`, `.windsurf/`, or `RTK.md`.
-- Do not start implementation in the same block as environment setup unless explicitly requested.
-- Report installed tools, skipped tools, commands run, configs touched, and verification results.
-- Never claim a tool is installed without running a verification command or clearly marking it as unverified.
-- If a tool requires manual login, shell restart, PATH change, or user confirmation, report it and stop.
-- If using compressed or sandboxed output, preserve raw evidence when relevant.
-- Semantic editing tools must obey allowed and forbidden files.
-- Caveman/terse-output is forbidden for specs, ADRs, audits, handoffs, releases, and public docs.
-- Environment bootstrap and product implementation should be separate blocks unless explicitly requested.
-- Stop after the requested block.
+These are repository invariants for AI-assisted work. Keep them short and durable.
 
-## Git Rules
+## Work Discipline
 
-- Do not use `git add .`.
-- Stage files explicitly.
+- Inspect the relevant code and current repository state before editing.
+- Make the smallest coherent change that satisfies the request.
+- Do not perform unrelated rewrites or refactors.
+- Respect explicit user scope and repository boundaries.
+- Validate changed behavior before claiming completion.
+- Review the final diff for scope drift, accidental changes, and residual risk.
+- If validation cannot run, report why and what remains unverified.
+
+## Safety
+
+- Never expose or commit secrets, credentials, tokens, personal paths, private data, lyrics, fingerprints, or real music-library data.
+- Automated tests must use synthetic data or sanitized fixtures, not a real user music library.
+- Destructive, publishing, production, migration, authentication, or security-sensitive actions require the Safety Gate in `docs/safety.md`.
+- Prefer dry-run, preview, temporary workspaces, backups, or reversible operations before destructive changes when practical.
+- Do not publish, deploy, merge, release, force push, or rewrite history unless explicitly requested.
+- Keep local agent/tool configuration and generated agent state untracked unless an explicitly approved sanitized example is the task.
+
+## Architecture And Testing
+
+- Follow existing boundaries unless changing them is part of the request.
+- Keep heavy domain logic out of UI screens and thin app shells.
+- Do not invent an abstraction only to create a fake.
+- Use fakes, fixtures, stubs, or emulators when a real external or nondeterministic boundary benefits from isolation.
+- Use ADRs only for architectural decisions that are meaningfully hard to reverse.
+
+## Git
+
+- Prefer explicit staging over `git add .` when working interactively.
 - Do not force push.
 - Do not rewrite history unless explicitly requested.
