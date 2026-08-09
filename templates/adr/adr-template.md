@@ -1,6 +1,6 @@
 # ADR: Title
 
-Use an ADR only when the **Design Gate** is active and the decision is architectural and meaningfully hard to reverse.
+Use an ADR only when **Design** is active and the decision is architectural and meaningfully hard to reverse.
 
 ## Status
 
