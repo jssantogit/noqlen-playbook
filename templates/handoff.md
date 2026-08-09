@@ -1,6 +1,8 @@
 # Handoff
 
-Use this only when the **Handoff Gate** is active: work is interrupted, transferred, blocked, or cannot be safely resumed from repository state alone.
+Use this only when the **Handoff Trigger** fires: work is interrupted, transferred, blocked, or cannot be safely resumed from repository state alone.
+
+A handoff is continuity support, not a normal workflow step and not something to create after every completed task.
 
 ## State
 
