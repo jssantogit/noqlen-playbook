@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the required Noqlen Playbook repository structure."""
+"""Validate the essential Noqlen Playbook V2 structure and canonical workflow."""
 
 from pathlib import Path
 import sys
@@ -8,129 +8,99 @@ import sys
 REQUIRED_FILES = [
     "README.md",
     "AGENTS.md",
-    ".gitignore",
-    "docs/00-overview.md",
-    "docs/01-ai-development-workflow.md",
-    "docs/02-context-system.md",
-    "docs/03-block-based-development.md",
-    "docs/04-specs-and-adrs.md",
-    "docs/05-opencode-workflow.md",
-    "docs/06-audit-workflow.md",
-    "docs/07-testing-and-validation.md",
-    "docs/08-repo-hygiene.md",
-    "docs/09-app-development-workflow.md",
-    "docs/10-release-workflow.md",
-    "docs/11-future-ai-workflows.md",
-    "docs/12-local-ecosystem-study.md",
-    "docs/13-workflow-retrofit-patterns.md",
-    "docs/14-agent-tooling.md",
-    "docs/15-token-economy-policy.md",
-    "docs/16-optimized-development-environment.md",
-    "docs/17-new-project-environment-bootstrap.md",
-    "docs/18-ci-security-and-audit-evidence.md",
-    "docs/19-tooling-radar.md",
-    "templates/context/current.md",
-    "templates/context/handoff.md",
-    "templates/context/delta-summary.md",
-    "templates/context/audit-summary.md",
-    "templates/specs/requirements.md",
-    "templates/specs/design.md",
-    "templates/specs/tasks.md",
-    "templates/specs/review.md",
+    "docs/workflow.md",
+    "docs/safety.md",
+    "docs/testing.md",
+    "docs/architecture.md",
+    "docs/release.md",
+    "docs/tooling.md",
+    "templates/change-brief.md",
+    "templates/handoff.md",
     "templates/adr/adr-template.md",
-    "templates/prompts/opencode-plan-block.md",
-    "templates/prompts/opencode-implement-block.md",
-    "templates/prompts/opencode-audit-block.md",
-    "templates/prompts/opencode-fix-audit-findings.md",
-    "templates/prompts/opencode-prepare-release.md",
-    "templates/prompts/chatgpt-planning-session.md",
-    "templates/prompts/opencode-study-local-repos.md",
-    "templates/prompts/opencode-retrofit-existing-repo.md",
-    "templates/prompts/opencode-extract-workflow-lessons.md",
-    "templates/prompts/opencode-evaluate-agent-tooling.md",
-    "templates/prompts/opencode-tool-assisted-block.md",
-    "templates/prompts/opencode-bootstrap-project-environment.md",
-    "templates/prompts/opencode-handoff-bootstrap.md",
-    "templates/prompts/opencode-bootstrap-optimized-environment.md",
-    "templates/prompts/opencode-new-project-environment-handoff.md",
-    "templates/github/pull_request_template.md",
-    "templates/github/issue_feature.md",
-    "templates/github/issue_bug.md",
-    "templates/github/issue_audit.md",
-    "examples/aria-core/block-workflow-example.md",
-    "examples/aria-core/audit-example.md",
-    "examples/aria-core/handoff-example.md",
-    "examples/forge-core/workflow-retrospective.md",
-    "examples/forge-core/retrofit-example.md",
-    "examples/forge-core/block-example.md",
-    "examples/flux/workflow-retrospective.md",
-    "examples/flux/retrofit-example.md",
-    "examples/flux/block-example.md",
-    "examples/anchor/workflow-retrospective.md",
-    "examples/anchor/retrofit-example.md",
-    "examples/anchor/block-example.md",
-    "examples/app-shell/app-feature-spec-example.md",
-    "examples/app-shell/ui-agent-prompt-example.md",
-    "examples/future-ai/agent-boundary-example.md",
-    "examples/future-ai/data-safety-example.md",
-    "examples/future-ai/agent-tooling-pilot.md",
-    "examples/future-ai/tool-mode-matrix.md",
-    "examples/future-ai/optimized-environment-handoff.md",
-    "examples/future-ai/tool-installation-report.md",
-    "examples/tooling/opencode.example.jsonc",
-    "examples/tooling/serena.example.md",
-    "examples/tooling/context-mode-opencode.example.json",
-    "examples/tooling/opencode-agent-review.example.md",
-    "examples/tooling/tooling-decision-matrix.example.md",
-    "examples/tooling/tool-installation-report.example.md",
-    ".github/workflows/playbook-validate.yml",
-    ".github/workflows/dependency-review.yml",
     "scripts/check_repo_contamination.py",
     "scripts/validate_playbook_structure.py",
+    ".github/workflows/playbook-validate.yml",
 ]
 
 REQUIRED_DIRS = [
     "docs",
     "templates",
+    "templates/adr",
+    "scripts",
+    ".github/workflows",
+]
+
+REQUIRED_TEXT = {
+    "README.md": [
+        "Inspect -> Implement -> Verify -> Review",
+        "Triggered Gates",
+    ],
+    "docs/workflow.md": [
+        "Plan Gate",
+        "Design Gate",
+        "Safety Gate",
+        "Fake Gate",
+        "Audit Gate",
+        "Handoff Gate",
+        "Do not create an interface only so a fake can exist.",
+    ],
+    "AGENTS.md": [
+        "Validate changed behavior before claiming completion.",
+        "Do not invent an abstraction only to create a fake.",
+    ],
+}
+
+LEGACY_PATHS = [
     "templates/context",
     "templates/specs",
-    "templates/adr",
     "templates/prompts",
-    "templates/github",
-    "examples",
-    "examples/aria-core",
-    "examples/forge-core",
-    "examples/flux",
-    "examples/anchor",
-    "examples/app-shell",
-    "examples/future-ai",
-    "examples/tooling",
-    ".github",
-    ".github/workflows",
-    "scripts",
 ]
+
+LEGACY_NUMBERED_DOCS = [f"docs/{number:02d}-" for number in range(20)]
 
 
 def main() -> int:
     root = Path.cwd()
-    missing_dirs = [path for path in REQUIRED_DIRS if not (root / path).is_dir()]
-    missing_files = [path for path in REQUIRED_FILES if not (root / path).is_file()]
+    failures: list[str] = []
 
-    if missing_dirs:
-        print("Missing directories:")
-        for path in missing_dirs:
-            print(f"- {path}")
+    for path in REQUIRED_DIRS:
+        if not (root / path).is_dir():
+            failures.append(f"missing required directory: {path}")
 
-    if missing_files:
-        print("Missing files:")
-        for path in missing_files:
-            print(f"- {path}")
+    for path in REQUIRED_FILES:
+        if not (root / path).is_file():
+            failures.append(f"missing required file: {path}")
 
-    if missing_dirs or missing_files:
-        print("FAIL: playbook structure is incomplete.")
+    for path, phrases in REQUIRED_TEXT.items():
+        file_path = root / path
+        if not file_path.is_file():
+            continue
+        text = file_path.read_text(encoding="utf-8")
+        for phrase in phrases:
+            if phrase not in text:
+                failures.append(f"{path} is missing canonical text: {phrase!r}")
+
+    for path in LEGACY_PATHS:
+        if (root / path).exists():
+            failures.append(f"legacy process directory still present: {path}")
+
+    docs_dir = root / "docs"
+    if docs_dir.is_dir():
+        for path in docs_dir.iterdir():
+            if not path.is_file():
+                continue
+            relative = f"docs/{path.name}"
+            if any(relative.startswith(prefix) for prefix in LEGACY_NUMBERED_DOCS):
+                failures.append(f"legacy numbered workflow doc still present: {relative}")
+
+    if failures:
+        print("Playbook V2 validation failures:")
+        for failure in failures:
+            print(f"- {failure}")
+        print("FAIL: playbook does not match the V2 essential structure.")
         return 1
 
-    print("PASS: playbook structure is complete.")
+    print("PASS: playbook matches the V2 essential structure.")
     return 0
 
 
