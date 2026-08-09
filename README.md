@@ -1,102 +1,101 @@
 # Noqlen Playbook
 
-Noqlen Playbook documents the AI-assisted development workflow used across the Noqlen ecosystem. It is a practical operating manual for planning, scoped implementation, validation, audits, handoffs, repository hygiene, and future AI workflows.
+Noqlen Playbook is a lightweight operating guide for AI-assisted software work across the Noqlen ecosystem.
 
-This repository is not the beginning of Noqlen. The ecosystem is already mostly built; this playbook preserves the working method so it can be reused for apps, future repositories, future agents, and safer AI-assisted delivery.
+Its goal is simple: **move quickly without giving up evidence, safety, or reviewability**.
 
-## Who Uses It
+The playbook is intentionally risk-based. Low-risk work should be cheap to execute. Extra process appears only when a concrete risk or irreversible decision justifies it.
 
-- Humans planning Noqlen work.
-- ChatGPT sessions.
-- Opencode/Codex agents.
-- Future app teams.
-- Future repository maintainers.
+## Core Loop
 
-## Default Loop
+```text
+Inspect -> Implement -> Verify -> Review
+```
 
-Plan -> Block -> Prompt -> Tool Mode -> Implement -> Validate -> Audit -> Fix -> Commit -> Handoff -> Next block
+### Inspect
 
-## Core Principles
+Understand the requested behavior and the smallest relevant part of the repository before editing. Read more context only when the change requires it.
 
-- Use the smallest useful context.
-- Work in scoped blocks.
+### Implement
+
+Make the smallest coherent change that satisfies the request. Avoid unrelated refactors and preserve existing boundaries unless changing them is part of the task.
+
+### Verify
+
+Run validation proportional to the behavior changed. Never claim completion without evidence. If validation cannot run, report the reason and residual risk.
+
+### Review
+
+Inspect the diff, confirm the requested behavior is covered, check for scope drift, and make sure no new risk was introduced.
+
+## Triggered Gates
+
+The core loop is always used. The following gates are **conditional**:
+
+- **Plan Gate** — use when requirements are ambiguous, several subsystems are involved, or the implementation path is uncertain.
+- **Design Gate** — use for hard-to-reverse architecture, public API strategy, storage/schema changes, new dependencies, or important app/core boundaries.
+- **Safety Gate** — use for destructive operations, real user data, authentication/security, migrations, publishing, production actions, or other high-impact changes.
+- **Fake Gate** — use when an external, expensive, nondeterministic, or unsafe dependency benefits from isolation in tests or development.
+- **Audit Gate** — use for security-sensitive work, releases, risky data operations, important public boundaries, or changes where independent review adds material value.
+- **Handoff Gate** — use when work is interrupted, transferred to another agent/session, or cannot be safely resumed from repository state alone.
+
+A gate exists because of a concrete condition, not because every task must fill a template.
+
+See [`docs/workflow.md`](docs/workflow.md) for decision rules.
+
+## Principles
+
+- Use the smallest safe context.
+- Prefer executable guardrails over repeated prompt warnings.
 - Validate before claiming done.
-- Audit meaningful changes.
-- Prefer specs before non-trivial changes.
-- Use ADRs only for architectural decisions.
-- Use fake-first development for integrations.
-- Use dry-run before apply.
-- Never perform destructive operations without explicit confirmation.
-- Never expose secrets, personal paths, lyrics, fingerprints, or private data.
-- Never use a real music library in automated tests.
-- Keep apps thin over solid cores.
+- Review the actual diff, not only the agent summary.
+- Keep changes focused; do not rewrite unrelated code opportunistically.
+- Use risk-based testing.
+- Use synthetic fixtures instead of real private libraries or user data.
+- Use dry-run or preview behavior before destructive operations when practical.
+- Never expose secrets, credentials, personal paths, private data, lyrics, fingerprints, or real music-library data.
+- Keep heavy domain logic out of UI screens and thin app shells.
+- Create abstractions for product or architectural reasons, not merely to satisfy a testing ritual.
+- Never create an interface only so a fake can exist.
+- Use ADRs only for decisions that are architectural and meaningfully hard to reverse.
 
-## Context Levels
+## Documentation Map
 
-- `tiny`: current task, target files, constraints, validation commands.
-- `standard`: tiny context plus active spec, relevant ADR, and module context.
-- `full`: standard context plus architecture, handoff, previous audits, and broader design history.
+Read only what the task needs:
 
-Use the smallest context that is safe for the task.
+- [`docs/workflow.md`](docs/workflow.md) — core loop and gate decisions.
+- [`docs/safety.md`](docs/safety.md) — destructive operations, private data, repository hygiene, security boundaries.
+- [`docs/testing.md`](docs/testing.md) — risk-based validation, fixtures, fakes, dry-run testing.
+- [`docs/architecture.md`](docs/architecture.md) — boundaries, public APIs, dependencies, ADR criteria.
+- [`docs/release.md`](docs/release.md) — release preparation and publishing controls.
+- [`docs/tooling.md`](docs/tooling.md) — optional agent/tooling guidance; tooling is not part of the core workflow.
 
-## Workflow Accelerators
+## Conditional Templates
 
-The Noqlen workflow remains stable:
+Templates are optional artifacts activated by gates:
 
-Plan -> Block -> Prompt -> Tool Mode -> Implement -> Validate -> Audit -> Fix -> Commit -> Handoff -> Next block
+- [`templates/change-brief.md`](templates/change-brief.md) — Plan Gate when a short written design materially reduces ambiguity.
+- [`templates/adr/adr-template.md`](templates/adr/adr-template.md) — Design Gate for hard-to-reverse architectural decisions.
+- [`templates/handoff.md`](templates/handoff.md) — Handoff Gate for interrupted or transferred work.
 
-Workflow accelerators are optional and explicit. They improve navigation, context control, shell output handling, and CI guardrails, but they are not the workflow itself.
+Do not create a template artifact when repository state, the task description, and validation evidence are already sufficient.
 
-Recommended baseline:
+## Git And Repository Safety
 
-1. OpenCode native capabilities.
-2. Serena read-only.
-3. RTK / Rust Token Killer for shell-heavy blocks.
-4. Context Mode as a pilot for long sessions.
-5. Caveman disabled by default.
-
-Tooling cannot bypass scoped blocks, specs, validation, audits, handoffs, repo hygiene, or human review.
-
-## Optimized Development Environment
-
-An optimized development environment may be prepared before coding when a handoff asks for it. Environment bootstrap is a separate block from product implementation unless explicitly requested otherwise.
-
-Prefer global or user-level tool setup. Project-local tooling config is exception-only and must not be committed unless explicitly approved and sanitized.
-
-## Tool Mode
-
-Every tool-assisted block declares Tool Mode. Use `none` when no optional accelerator affects the block. Use specific modes such as `native`, `serena-ro`, `rtk`, `context-mode`, or `combo` when tooling changes how the block is executed.
-
-Tool Mode documents operational support only. It does not reduce the required spec, validation, audit, handoff, or repository hygiene evidence.
-
-## Safety and Evidence
-
-Compressed, routed, or summarized output may help exploration, but it is not audit proof. Raw evidence is required for serious debugging, validation failures, audits, release readiness, boundary changes, and security-sensitive changes.
-
-Do not commit active local agent/tool configs, credentials, auth files, generated tool state, or personal paths. Version only sanitized `.example.*` files.
-
-## App Development Rule
-
-Apps are control and experience layers over solid cores. Heavy domain logic belongs in cores, services, adapters, or explicit contracts, not in UI screens.
-
-## Learning From Local Repositories
-
-The playbook may study local Noqlen repositories read-only to extract reusable workflow lessons. This kind of study must produce sanitized observations only and must never copy private data, secrets, personal paths, lyrics, fingerprints, real library paths, or full local configuration files.
-
-## Repository Map
-
-- `docs/`: workflow documentation.
-- `templates/context/`: current context, handoff, delta, and audit summaries.
-- `templates/specs/`: requirements, design, tasks, and review templates.
-- `templates/adr/`: ADR template.
-- `templates/prompts/`: ChatGPT and Opencode/Codex prompt templates.
-- `templates/github/`: PR and issue templates.
-- `examples/`: safe examples for Aria Core, app shells, and future agents.
-- `scripts/`: local validation and contamination checks.
+- Do not force push or rewrite history unless explicitly requested.
+- Do not publish, deploy, merge, or release unless the user requested that action.
+- Prefer explicit staging over broad staging when working interactively.
+- Keep local agent configuration, credentials, generated state, and personal paths out of the repository.
 
 ## Validation
+
+For this repository:
 
 ```bash
 python3 scripts/validate_playbook_structure.py
 python3 scripts/check_repo_contamination.py
 ```
+
+If `python3` is unavailable, use `python` and report the fallback.
+
+The structure validator checks the small set of V2 essentials. It does not require historical process files merely because they once existed.
