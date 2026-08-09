@@ -10,9 +10,13 @@ These are repository invariants for AI-assisted work. Keep them short and durabl
 - Do not keep a diff artificially small at the cost of correctness or maintainability.
 - Respect explicit user scope and repository boundaries.
 - Validate changed behavior before claiming completion.
+- When cheap and relevant, observe the actual user-visible/runtime outcome instead of relying only on implementation claims.
 - Review the final diff for scope drift, accidental changes, and residual risk.
 - If validation cannot run, report why and what remains unverified.
 - Do the workflow; do not narrate step names, inactive escalations, risk tiers, Tool Mode, or process metadata unless they materially help the user or reviewer.
+- Split or delegate work only when feedback cycles, independent parallelism, context isolation, or independent scrutiny justify the coordination cost.
+- Keep one coordinator responsible for integrating delegated work and verifying the combined result.
+- When the same correction or failure recurs, improve an executable guardrail, reusable skill/procedure, or discoverable documentation instead of repeatedly expanding prompts.
 
 ## Safety
 
@@ -26,6 +30,7 @@ These are repository invariants for AI-assisted work. Keep them short and durabl
 - Prefer dry-run, preview, temporary workspaces, backups, or reversible operations only when they reduce a concrete failure mode.
 - Do not publish, deploy, merge, release, force push, or rewrite history unless explicitly requested.
 - Keep local agent/tool configuration and generated agent state untracked unless an explicitly approved sanitized example is the task.
+- Treat third-party skills, plugins, MCP servers, and agent packages as software trust dependencies; inspect them, minimize privileges, and pin/version durable dependencies when reproducibility matters.
 
 ## Architecture And Testing
 
@@ -33,6 +38,7 @@ These are repository invariants for AI-assisted work. Keep them short and durabl
 - Keep heavy domain logic out of UI screens and thin app shells.
 - Do not invent an abstraction only to create a fake.
 - Isolate real external or nondeterministic dependencies during verification when direct use would be unsafe, impractical, flaky, expensive, or dependent on private state.
+- Use isolated workspaces for concurrent writers when interference is possible; read-only parallel investigation does not require a worktree by default.
 - Use ADRs only for architectural decisions that are meaningfully hard to reverse.
 - Routine edits to an established public API do not require an ADR unless they change durable API strategy or boundary policy.
-- Diff size alone does not require formal audit or branch isolation.
+- Diff size or task duration alone does not require formal audit, delegation, planning, or branch isolation.
