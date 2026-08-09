@@ -14,9 +14,9 @@ These are repository invariants for AI-assisted work. Keep them short and durabl
 - Review the final diff for scope drift, accidental changes, and residual risk.
 - If validation cannot run, report why and what remains unverified.
 - Do the workflow; do not narrate step names, inactive escalations, risk tiers, Tool Mode, or process metadata unless they materially help the user or reviewer.
-- Split or delegate work only when feedback cycles, independent parallelism, context isolation, or independent scrutiny justify the coordination cost.
+- Default to one capable agent. Split or delegate work only when feedback cycles, independent parallelism, context isolation, or independent scrutiny justify the coordination cost.
 - Keep one coordinator responsible for integrating delegated work and verifying the combined result.
-- When the same correction or failure recurs, improve an executable guardrail, reusable skill/procedure, or discoverable documentation instead of repeatedly expanding prompts.
+- When the same correction or failure recurs, choose the lightest durable fix that addresses the cause instead of repeatedly expanding prompts.
 
 ## Safety
 
@@ -30,7 +30,7 @@ These are repository invariants for AI-assisted work. Keep them short and durabl
 - Prefer dry-run, preview, temporary workspaces, backups, or reversible operations only when they reduce a concrete failure mode.
 - Do not publish, deploy, merge, release, force push, or rewrite history unless explicitly requested.
 - Keep local agent/tool configuration and generated agent state untracked unless an explicitly approved sanitized example is the task.
-- Treat third-party skills, plugins, MCP servers, and agent packages as software trust dependencies; inspect them, minimize privileges, and pin/version durable dependencies when reproducibility matters.
+- Treat third-party skills, plugins, MCP servers, and agent packages as software trust dependencies: review on adoption or material change, minimize privileges, and pin/version durable dependencies when reproducibility matters.
 
 ## Architecture And Testing
 
