@@ -11,7 +11,7 @@ Typical progression:
 - docs/config wording: structure checks, parser/lint checks, or direct review;
 - local deterministic logic: focused unit tests;
 - multi-module behavior: integration tests plus focused unit coverage;
-- public boundary: contract/compatibility tests;
+- public boundary: contract/compatibility tests when the boundary matters to consumers;
 - file/data/security behavior: positive and negative cases, path/boundary checks, dry-run evidence;
 - release: broad test suite plus release-readiness checks.
 
@@ -36,30 +36,35 @@ Prefer:
 - local emulators;
 - fake or stub providers where appropriate.
 
-## Fake Gate
+## Isolation Rule
 
-A fake is a tool, not a mandatory phase.
+Isolation is a verification technique, not a workflow phase or gate that must be declared.
 
-Use a fake, stub, fixture, emulator, or injected dependency when the real boundary is:
+Isolate the real dependency when exercising it directly would be:
 
+- unsafe;
 - external;
 - nondeterministic;
 - slow or expensive;
-- unsafe to exercise repeatedly;
+- flaky;
 - unavailable in CI;
-- dependent on real user data.
+- dependent on real user data or state.
+
+Use the lightest useful substitute: fixture, stub, fake, emulator, temporary directory, deterministic clock/random source, or an injected dependency when a real boundary already exists.
 
 Examples include network providers, filesystem operations over real libraries, subprocesses, clocks, external services, and hardware.
 
 ### Anti-pattern
 
-Do not create `SomethingProvider` plus `FakeSomethingProvider` merely because the workflow expects a fake.
+Do not create `SomethingProvider` plus `FakeSomethingProvider` merely because testing guidance mentions isolation.
 
 Create an abstraction when the product or architecture benefits from a stable boundary. Once that boundary exists, use the lightest test double needed to test consumers safely.
 
+A temporary directory or fixture is often enough; do not promote a simple test need into a new architectural surface.
+
 ## Dry-Run Testing
 
-Operations that move, delete, overwrite, import, publish, migrate, or clean data should expose preview/dry-run behavior when practical.
+Operations that move, delete, overwrite, import, publish, migrate, or clean real data should expose preview/dry-run behavior when practical.
 
 Tests should confirm that preview:
 
@@ -67,6 +72,8 @@ Tests should confirm that preview:
 - does not mutate real state;
 - reports unsafe or ambiguous targets clearly;
 - prevents traversal or boundary escape where paths are involved.
+
+Implementation and tests should exercise these behaviors on isolated state. User confirmation is about applying high-impact behavior to real state, not about running safe tests.
 
 ## Failure Evidence
 
