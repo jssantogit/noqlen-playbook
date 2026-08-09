@@ -41,6 +41,8 @@ REQUIRED_TEXT = {
         "Do the work; do not narrate the process.",
         "do not ask for the same confirmation twice",
         "Prefer observable outcomes over agent claims",
+        "Default to one capable agent",
+        "lightest durable fix",
     ],
     "docs/workflow.md": [
         "The four escalations are **Plan, Design, Safety, and Audit**.",
@@ -51,7 +53,8 @@ REQUIRED_TEXT = {
         "Do not create an interface only so a fake can exist.",
         "Do not enumerate inactive escalations.",
         "Diff size alone does not activate Audit.",
-        "Delegate when **separate context or independent execution saves more work than coordination costs**.",
+        "**Default to one capable agent.**",
+        "Choose the **lightest durable fix** that matches the recurring problem",
         "Durable agent guidance should come from observed need, not speculation.",
     ],
     "docs/safety.md": [
@@ -74,13 +77,16 @@ REQUIRED_TEXT = {
         "Permissions, Sandboxes, And Hooks",
         "Search, Context, And Observability",
         "Harness Feedback",
+        "**Default to one capable agent.**",
+        "Do **not** re-audit an unchanged, already-approved dependency on every routine use.",
     ],
     "AGENTS.md": [
         "Validate changed behavior before claiming completion.",
         "do not ask for the same confirmation twice.",
         "Do not invent an abstraction only to create a fake.",
-        "When the same correction or failure recurs",
-        "Treat third-party skills, plugins, MCP servers, and agent packages as software trust dependencies",
+        "Default to one capable agent.",
+        "choose the lightest durable fix",
+        "review on adoption or material change",
         "Diff size or task duration alone does not require formal audit, delegation, planning, or branch isolation.",
     ],
 }
