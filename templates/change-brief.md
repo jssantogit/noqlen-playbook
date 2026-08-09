@@ -1,6 +1,6 @@
 # Change Brief
 
-Use this only when the **Plan Gate** is active and a durable written brief will reduce ambiguity.
+Use this only when **Plan** is active and a durable written brief will materially reduce ambiguity or coordination cost.
 
 ## Goal
 
