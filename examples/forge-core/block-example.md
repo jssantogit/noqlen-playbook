@@ -1,33 +1,27 @@
-# Forge Core Block Example
+# Example: Small Local Change With No Gates
 
-## Goal
+## Task
 
-Harden one CLI/core boundary so the CLI remains a thin adapter over a service result.
+Add deterministic alphabetical ordering to an existing in-memory result list.
 
-## Allowed files
+## Inspect
 
-- One active spec directory.
-- One service or Core API module named by the spec.
-- Matching focused tests with fake data.
-- Handoff or delta summary.
+Locate the existing sorting/result code and its focused tests. Confirm the change is local and does not alter a public persistence format, destructive operation, external provider, or security boundary.
 
-## Forbidden files
+## Implement
 
-- Unrelated CLI commands.
-- Release files.
-- Real local configuration.
-- Real music library fixtures.
+Change the existing logic directly. Do not create a sorting interface, provider abstraction, fake provider, spec directory, audit report, Tool Mode declaration, or handoff merely for process compliance.
 
-## Validation
+## Verify
 
-- Run focused tests for the service/Core API boundary.
-- Run a CLI smoke command that does not require a real library.
-- Run repository hygiene checks.
+Add or update a focused regression test for ordering and run the relevant test set.
 
-## Audit trigger
+## Review
 
-Audit if public CLI output, public API shape, apply behavior, or file operation safety changes.
+Inspect the diff for unintended ordering behavior or unrelated edits.
 
-## Stop condition
+## Gates
 
-Stop if the change requires broad CLI rewrites, real library access, or behavior outside the active spec.
+None.
+
+If inspection reveals that ordering is actually part of a public contract or spans several independent systems, activate the relevant gate at that point. Do not pre-activate gates for hypothetical complexity.
