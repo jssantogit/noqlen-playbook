@@ -17,6 +17,23 @@ Typical progression:
 
 Do not run a massive suite by ritual when a targeted check gives sufficient evidence. Do not skip broader checks when blast radius is real.
 
+## Outcome Verification
+
+Tests prove important properties, but the most useful evidence is sometimes direct observation of the changed outcome.
+
+When cheap and relevant, supplement focused tests by exercising the affected path itself, for example:
+
+- run the changed CLI command with safe synthetic input;
+- call the affected API endpoint or facade;
+- start the relevant local service and observe its readiness/result;
+- render or inspect the affected UI state;
+- inspect a generated artifact;
+- check the relevant sanitized log or metric.
+
+Do not add an end-to-end ceremony when focused automated tests already provide sufficient evidence. Direct observation is valuable when it cheaply catches integration or presentation failures that internal tests may miss.
+
+Agent claims such as "implemented", "fixed", or "looks correct" are not verification evidence by themselves.
+
 ## Regression Rule
 
 When changed behavior is important enough that a future regression would matter, prefer a durable automated test.
@@ -62,9 +79,21 @@ Create an abstraction when the product or architecture benefits from a stable bo
 
 A temporary directory or fixture is often enough; do not promote a simple test need into a new architectural surface.
 
+## Parallel Verification
+
+Independent test or failure investigations may be delegated in parallel when doing so reduces elapsed time or context interference.
+
+Keep the final verification coherent:
+
+- one coordinator owns the final conclusion;
+- integrate findings before claiming completion;
+- after concurrent implementation work is combined, validate the combined state rather than relying only on each isolated worker's result.
+
+Do not create multiple test agents for routine work when one focused validation pass is cheaper and sufficient.
+
 ## Dry-Run Testing
 
-Operations that move, delete, overwrite, import, publish, migrate, or clean real data should expose preview/dry-run behavior when practical.
+Operations that move, delete, overwrite, import, publish, migrate, or clean real data should expose preview/dry-run behavior when practical and when preview meaningfully reduces risk.
 
 Tests should confirm that preview:
 
