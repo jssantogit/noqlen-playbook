@@ -1,6 +1,6 @@
 # Release
 
-Release work activates the **Safety Gate** and normally the **Audit Gate**.
+Release work activates **Safety** and normally **Audit**.
 
 Release preparation and release publication are separate actions. Preparing a release does not authorize publishing it.
 
