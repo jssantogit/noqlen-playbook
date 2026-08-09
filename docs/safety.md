@@ -1,10 +1,12 @@
 # Safety
 
-Safety is enforced by the **Safety Gate** in `workflow.md`. It is conditional, but when triggered its controls are mandatory.
+Safety is a triggered escalation for work whose **real execution** can materially affect data, users, credentials, repository history, production, or published state.
 
-## When The Gate Activates
+Safety controls are mandatory when the corresponding failure mode is present, but use only the controls that address the actual risk.
 
-Use the Safety Gate for work that can materially affect:
+## When Safety Activates
+
+Use Safety for work involving real-state impact such as:
 
 - real user or library data;
 - credentials, authentication, authorization, or security policy;
@@ -13,19 +15,29 @@ Use the Safety Gate for work that can materially affect:
 - published packages, releases, or artifacts;
 - migrations, destructive cleanup, or irreversible operations.
 
-## Default Controls
+## Implementation Versus Real Execution
 
-Choose the smallest set that addresses the actual risk:
+Distinguish **building/testing a capability** from **performing the high-impact action**.
 
-- explicit confirmation before destructive or publishing actions;
+Implementing or testing delete, move, overwrite, import, migration, deployment, or publication behavior against synthetic data, temporary directories, mocks, emulators, or isolated state does **not** itself require user confirmation.
+
+Explicit confirmation or apply intent is required before the agent performs a destructive, publishing, production, history-rewriting, or otherwise high-impact action against real state when that action has not already been explicitly authorized.
+
+A safe implementation should make this boundary difficult to cross accidentally.
+
+## Controls
+
+Choose the smallest set that addresses the concrete failure mode:
+
+- explicit apply intent before high-impact real-state actions;
 - dry-run or preview before apply;
-- temporary workspace or synthetic dataset before real data;
-- backup, rollback, recovery, or restore path where failure could cause loss;
+- temporary workspace or synthetic dataset during development and tests;
+- backup, rollback, recovery, or restore path where failure could cause material loss;
 - restricted tool permissions for shell, network, write, deploy, push, or delete actions;
 - targeted negative tests for unsafe paths;
-- stronger independent review when impact is high.
+- independent review when impact remains high after normal validation.
 
-Do not require every control mechanically. The control must map to a concrete failure mode.
+Do not require every control mechanically.
 
 ## Data Rules
 
@@ -39,18 +51,18 @@ Never expose or commit:
 - audio fingerprints or similar private derived data;
 - unsanitized provider output or local configuration.
 
-Automated tests must use synthetic metadata, sanitized fixtures, temporary directories, or fake services.
+Automated tests must use synthetic metadata, sanitized fixtures, temporary directories, or isolated services.
 
-## Destructive Operations
+## Destructive Operations Against Real State
 
-For delete, move, overwrite, import, cleanup, migration, or publication over real data:
+For delete, move, overwrite, import, cleanup, migration, or publication over real data/state:
 
 1. understand the exact target set;
 2. prefer preview/dry-run;
 3. validate path and boundary handling;
 4. make recovery possible when practical;
 5. require explicit apply intent;
-6. report what changed.
+6. report what actually changed.
 
 Operations should fail closed when target selection or safety checks are ambiguous.
 
@@ -73,8 +85,8 @@ python3 scripts/check_repo_contamination.py
 - Do not force push or rewrite history unless explicitly requested.
 - Do not merge, deploy, publish, tag, or release unless explicitly requested.
 - Release preparation and release publication are separate actions.
-- Prefer branch isolation for substantial changes.
+- Prefer branch isolation for substantial or high-impact changes.
 
 ## Security-Sensitive Work
 
-Authentication, authorization, secret handling, trust boundaries, sandboxing, and externally exposed behavior normally activate both Safety and Audit gates. Use the Architecture gate as well when the security decision changes a durable boundary or policy.
+Authentication, authorization, secret handling, trust boundaries, sandboxing, and externally exposed security behavior normally activate both Safety and Audit. Use Design as well when the work changes a durable security boundary or policy.
