@@ -16,11 +16,14 @@ These are repository invariants for AI-assisted work. Keep them short and durabl
 
 ## Safety
 
-- Never expose or commit secrets, credentials, tokens, personal paths, private data, lyrics, fingerprints, or real music-library data.
+- Do not commit or unnecessarily reproduce secrets, credentials, tokens, personal paths, private data, lyrics, fingerprints, or real music-library data.
+- User-authorized private/local data may be inspected transiently when the task requires it; minimize what is copied into durable or shareable artifacts.
 - Automated tests must use synthetic data or sanitized fixtures, not a real user music library.
 - Implement and test dangerous capabilities in isolated state; do not require user confirmation merely to run safe tests.
-- Before performing destructive, publishing, production, history-rewriting, or other high-impact actions against real state, require explicit apply intent when that action has not already been authorized.
-- Prefer dry-run, preview, temporary workspaces, backups, or reversible operations before destructive real-state changes when practical.
+- An explicit user request for a named action on a sufficiently defined target counts as authorization for that action; do not ask for the same confirmation twice.
+- Ask again only if target/scope is materially ambiguous, the action expands beyond authorization, consequences materially increase, or the tool/platform requires confirmation.
+- Before a high-impact real-state mutation that has not already been authorized, require explicit apply intent.
+- Prefer dry-run, preview, temporary workspaces, backups, or reversible operations only when they reduce a concrete failure mode.
 - Do not publish, deploy, merge, release, force push, or rewrite history unless explicitly requested.
 - Keep local agent/tool configuration and generated agent state untracked unless an explicitly approved sanitized example is the task.
 
@@ -32,10 +35,4 @@ These are repository invariants for AI-assisted work. Keep them short and durabl
 - Isolate real external or nondeterministic dependencies during verification when direct use would be unsafe, impractical, flaky, expensive, or dependent on private state.
 - Use ADRs only for architectural decisions that are meaningfully hard to reverse.
 - Routine edits to an established public API do not require an ADR unless they change durable API strategy or boundary policy.
-- Diff size alone does not require formal audit.
-
-## Git
-
-- Prefer explicit staging over `git add .` when working interactively.
-- Do not force push.
-- Do not rewrite history unless explicitly requested.
+- Diff size alone does not require formal audit or branch isolation.
