@@ -1,16 +1,18 @@
 # App Example: Readiness Status With A Real Boundary
 
-This example demonstrates a case where the **Fake Gate is justified**. It is not a required starting point for every app feature.
+This example shows where the **Isolation Rule** is useful. It is not a required starting point for every app feature.
 
 ## Goal
 
 Show whether an already-defined local service boundary is unknown, starting, ready, unavailable, or in error.
 
-## Why A Fake Helps Here
+## Why Isolation Helps Here
 
 The app consumes a real service-readiness boundary. Starting and failing the real local service in every UI test would be slower and less deterministic, so tests use a lightweight fake implementation of the **existing** readiness boundary.
 
 The boundary exists because the app and service are separate components — not because the playbook requires a fake.
+
+Use the lightest substitute that proves state behavior. If a fixture or stub is enough, do not create a richer fake.
 
 ## Verification
 
@@ -18,8 +20,4 @@ The boundary exists because the app and service are separate components — not 
 - verify safe error text does not expose private paths or sensitive data;
 - run the relevant integration check against the real boundary separately when practical.
 
-## Gates
-
-- Fake Gate: yes, because a real external/service boundary benefits from isolation.
-- Design Gate: only if the readiness contract itself changes materially.
-- Audit Gate: only if the public boundary or security/data risk warrants independent review.
+Design is relevant only if the durable readiness contract or compatibility strategy changes. Audit is relevant only when an important public/security boundary leaves high-impact residual risk after normal validation and diff review.
