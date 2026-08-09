@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the essential Noqlen Playbook V2.1 structure and canonical workflow."""
+"""Validate the essential Noqlen Playbook V2.2 structure and canonical workflow."""
 
 from pathlib import Path
 import sys
@@ -35,17 +35,27 @@ REQUIRED_TEXT = {
         "Inspect -> Implement -> Verify -> Review",
         "Triggered Escalations",
         "Isolation Rule",
+        "Delegation Rule",
+        "Harness Feedback Rule",
         "Handoff Trigger",
         "Do the work; do not narrate the process.",
         "do not ask for the same confirmation twice",
+        "Prefer observable outcomes over agent claims",
+        "Default to one capable agent",
+        "lightest durable fix",
     ],
     "docs/workflow.md": [
         "The four escalations are **Plan, Design, Safety, and Audit**.",
         "Isolation Rule",
+        "Delegation Rule",
+        "Harness Feedback Rule",
         "Handoff Trigger",
         "Do not create an interface only so a fake can exist.",
-        "Do not enumerate inactive gates.",
+        "Do not enumerate inactive escalations.",
         "Diff size alone does not activate Audit.",
+        "**Default to one capable agent.**",
+        "Choose the **lightest durable fix** that matches the recurring problem",
+        "Durable agent guidance should come from observed need, not speculation.",
     ],
     "docs/safety.md": [
         "Authorization And Apply Intent",
@@ -55,13 +65,29 @@ REQUIRED_TEXT = {
         "does **not** itself require user confirmation",
     ],
     "docs/testing.md": [
+        "Outcome Verification",
+        "Agent claims such as \"implemented\", \"fixed\", or \"looks correct\" are not verification evidence by themselves.",
         "Isolation is a verification technique, not a workflow phase or gate that must be declared.",
+        "Parallel Verification",
+    ],
+    "docs/tooling.md": [
+        "Capabilities Before Brands",
+        "Skills And Reusable Procedures",
+        "Subagents And Workspaces",
+        "Permissions, Sandboxes, And Hooks",
+        "Search, Context, And Observability",
+        "Harness Feedback",
+        "**Default to one capable agent.**",
+        "Do **not** re-audit an unchanged, already-approved dependency on every routine use.",
     ],
     "AGENTS.md": [
         "Validate changed behavior before claiming completion.",
         "do not ask for the same confirmation twice.",
         "Do not invent an abstraction only to create a fake.",
-        "Diff size alone does not require formal audit or branch isolation.",
+        "Default to one capable agent.",
+        "choose the lightest durable fix",
+        "review on adoption or material change",
+        "Diff size or task duration alone does not require formal audit, delegation, planning, or branch isolation.",
     ],
 }
 
@@ -141,13 +167,13 @@ def main() -> int:
                 failures.append(f"legacy gate terminology in {relative}: {phrase!r}")
 
     if failures:
-        print("Playbook V2.1 validation failures:")
+        print("Playbook V2.2 validation failures:")
         for failure in failures:
             print(f"- {failure}")
-        print("FAIL: playbook does not match the V2.1 essential structure.")
+        print("FAIL: playbook does not match the V2.2 essential structure.")
         return 1
 
-    print("PASS: playbook matches the V2.1 essential structure.")
+    print("PASS: playbook matches the V2.2 essential structure.")
     return 0
 
 

@@ -12,11 +12,11 @@ Everything else is conditional.
 
 The workflow is a way to work, not a required response format.
 
-Do not output `Inspect`, `Implement`, `Verify`, `Review`, gate status, risk tier, Tool Mode, context level, or other process metadata merely to prove the workflow was followed.
+Do not output `Inspect`, `Implement`, `Verify`, `Review`, escalation status, risk tier, Tool Mode, context level, or other process metadata merely to prove the workflow was followed.
 
 Report process details only when they materially help the user or reviewer understand a decision, a safety constraint, validation evidence, a blocker, or residual risk.
 
-Do not enumerate inactive gates.
+Do not enumerate inactive escalations.
 
 ## 1. Inspect
 
@@ -24,10 +24,12 @@ Before editing:
 
 - understand the requested behavior;
 - locate the smallest relevant code or documentation surface;
-- identify existing tests and boundaries;
+- identify existing tests, commands, boundaries, and observable behavior;
 - notice operations that could affect real data, public contracts, security, repository history, production, or release state.
 
-Do not pre-load broad architecture history by default. Expand context only when the task cannot be understood safely from the relevant code, tests, and nearby docs.
+Do not pre-load broad architecture history by default. Start from the task, relevant code, tests, and durable repository invariants. Expand context only when needed.
+
+Prefer progressive discovery over large up-front context dumps.
 
 ## 2. Implement
 
@@ -43,7 +45,9 @@ Default behavior:
 
 Do not keep a diff artificially small at the cost of correctness, maintainability, or a complete solution.
 
-A task does not need a written spec merely because it changes code or touches several files.
+A task does not need a written spec merely because it changes code, touches several files, or takes a long time.
+
+Split work when shorter feedback cycles, ownership boundaries, or genuinely independent execution improve reliability or elapsed time. Do not split work merely because it is large.
 
 ## 3. Verify
 
@@ -61,6 +65,12 @@ Examples:
 
 If a useful test does not exist and the behavior is important enough to regress, add one.
 
+When cheap and relevant, verify the **observable outcome**, not only internal implementation evidence. Examples include running the CLI path, exercising an API request, starting the app, rendering the affected UI state, checking a generated artifact, or inspecting the relevant log/metric.
+
+Do not add an end-to-end ritual when focused tests already prove the behavior. Direct observation is extra evidence when it is useful, not a universal ceremony.
+
+Agent statements such as "implemented", "fixed", or "looks correct" are not verification evidence by themselves.
+
 See the **Isolation Rule** below when the real dependency is unsafe, nondeterministic, expensive, slow, or unavailable in CI.
 
 ## 4. Review
@@ -75,7 +85,8 @@ Check:
 - error handling and boundaries still make sense;
 - no secrets/private data/local configuration leaked;
 - no unnecessary abstraction or compatibility surface was introduced;
-- any activated escalation was satisfied.
+- any activated escalation was satisfied;
+- delegated work was integrated coherently if delegation was used.
 
 Formal audit is not the default. Diff review is.
 
@@ -99,7 +110,7 @@ Typical triggers:
 - several independent components must coordinate through an interface or sequence that is not already established;
 - decomposition is needed because implementing directly would create avoidable rework or an unreviewable change.
 
-Do **not** activate Plan merely because a task touches many files, looks large, or feels complex if inspection already reveals a clear implementation path.
+Do **not** activate Plan merely because a task touches many files, looks large, takes a long time, or feels complex if inspection already reveals a clear implementation path.
 
 Output can be conversational. Use `templates/change-brief.md` only when a durable written brief materially reduces ambiguity or coordination cost.
 
@@ -154,7 +165,9 @@ Typical triggers:
 
 **Diff size alone does not activate Audit.** A large mechanical change with strong deterministic validation can be lower risk than a five-line authorization change.
 
-Prefer an independent/read-only reviewer when available. The implementer summarizing their own work is not a substitute for independent scrutiny when Audit is triggered.
+Prefer an independent/read-only reviewer when available. Another agent or model can provide a cheap independent pass when it has enough context and genuinely independent review value.
+
+The implementer summarizing their own work is not a substitute for independent scrutiny when Audit is triggered.
 
 For normal work, targeted validation plus diff review is sufficient.
 
@@ -162,7 +175,7 @@ For normal work, targeted validation plus diff review is sufficient.
 
 # Supporting Rules
 
-These rules support the core loop but are not gates that must be declared or reported.
+These rules support the core loop but are not escalations that must be declared or reported.
 
 ## Isolation Rule
 
@@ -184,6 +197,48 @@ Use the lightest technique that provides meaningful evidence.
 
 See `docs/testing.md`.
 
+## Delegation Rule
+
+**Default to one capable agent.** Delegate only when separate context or independent execution saves more work than coordination costs.
+
+Good reasons include:
+
+- independent read-only investigation can run in parallel;
+- several independent implementation units can progress concurrently;
+- a focused specialist can review a security, API, migration, or test concern without carrying the full implementation context;
+- a long exploration would materially pollute the coordinator's working context and can be summarized cleanly.
+
+Rules:
+
+- keep one coordinator responsible for the final integrated result;
+- parallelize independent work, not a serial chain of artificial roles;
+- read-only parallel investigation can share the same repository state;
+- concurrent writers should use isolated workspaces, worktrees, branches, or equivalent isolation when interference is possible;
+- integrate and verify the combined result after parallel work;
+- do not delegate merely because a task is large, long-running, or because multiple agents are available;
+- avoid delegation when workers would repeatedly depend on the same rapidly changing shared state or on each other's unfinished output.
+
+A `planner -> coder -> tester -> reviewer` chain is not automatically better than one capable agent. Add another agent only when the expected benefit is identifiable before delegation: lower elapsed time, cleaner context, independent scrutiny, or safer isolation.
+
+## Harness Feedback Rule
+
+When the **same** correction, failure mode, or instruction keeps recurring, improve the working environment instead of repeatedly expanding prompts.
+
+Choose the **lightest durable fix** that matches the recurring problem:
+
+- **Executable guardrail** — when a deterministic rule can be checked or enforced cheaply with a test, lint rule, type check, permission, hook, script, CI check, schema, sandbox, or validation;
+- **Reusable skill/procedure** — when a multi-step procedure repeats and benefits from on-demand instructions or scripts;
+- **Discoverable documentation** — when the missing piece is durable knowledge rather than executable policy;
+- **Prompt instruction** — when guidance is one-off, task-specific, or too cheap to justify permanent machinery.
+
+There is no requirement to prefer a hook, lint rule, or script over a simpler skill or document when the simpler fix solves the actual recurring problem.
+
+Do not add machinery after every single mistake. Improve the harness when the failure is recurring, costly, safety-relevant, or likely enough that the maintenance cost clearly pays for itself.
+
+Do not let harness cleanup hijack the current task. If the improvement is not necessary now and would expand scope materially, capture it for follow-up rather than performing an unrelated refactor.
+
+Durable agent guidance should come from observed need, not speculation.
+
 ## Handoff Trigger
 
 Persist a handoff only when continuity cannot safely rely on repository state alone:
@@ -203,11 +258,19 @@ Do not write a handoff after every completed task or block.
 
 ### Rename a label in one screen
 
-Core loop only. No spec, fake, audit report, Tool Mode, gate-status report, or handoff.
+Core loop only. No spec, fake, audit report, Tool Mode, escalation-status report, subagent, or handoff.
 
 ### Add deterministic sorting to an existing list
 
-Core loop. Add/update tests if the behavior can regress. No isolation technique is needed unless sorting crosses a real external boundary.
+Core loop. Add/update tests if the behavior can regress. No isolation or delegation is needed unless a real dependency or independent investigation justifies it.
+
+### Investigate three unrelated failing test groups
+
+Use read-only/diagnostic delegation when the failures are independent enough to investigate in parallel and doing so is expected to save meaningful elapsed time or context. One coordinator integrates the conclusions and decides what to change.
+
+### Implement two independent adapters at the same time
+
+Delegation can help if each adapter has a stable boundary and can be implemented/tested independently. Concurrent writers should use isolated workspaces when interference is possible. Re-run integration validation after combining them.
 
 ### Add a new provider API behind an existing service boundary
 
@@ -215,7 +278,11 @@ Core loop + Isolation Rule for tests. Use Plan only if provider behavior or inte
 
 ### Implement a delete-duplicates feature using temporary test directories
 
-Core loop + Safety-aware design and Isolation Rule. No user confirmation is needed merely to implement or test the capability in isolated state. Confirmation/apply intent is required before deleting real user files.
+Core loop + Safety-aware design and Isolation Rule. No user confirmation is needed merely to implement or test the capability in isolated state. Confirmation/apply intent is required before deleting real user files when that action was not already authorized.
+
+### The agent repeatedly forgets the same repository validation command
+
+Do not repeat the command in every future prompt. Make the command discoverable or executable through a stable project script/CI target when that improvement is worth maintaining.
 
 ### Change persistent metadata schema
 
@@ -223,7 +290,7 @@ Core loop + Design + Safety. Add Audit when migration failure could have materia
 
 ### Delete duplicate files from a real library
 
-Core loop + Safety. Use isolated temporary data for automated tests. Dry-run/preview and recovery strategy are expected before apply behavior.
+Core loop + Safety. Use isolated temporary data for automated tests. Dry-run/preview and recovery strategy are expected only when they reduce the concrete risk before apply behavior.
 
 ### Prepare a release
 
@@ -242,6 +309,6 @@ A normal implementation prompt should contain only what the agent needs now:
 
 Do not repeat the same goal/scope/allowed-files/forbidden-files/validation/stop-condition data across multiple artifacts unless a concrete risk makes that duplication useful.
 
-Do not add a workflow preamble or gate-status checklist to routine work.
+Do not add a workflow preamble, escalation-status checklist, agent-role choreography, or environment report to routine work.
 
-Prefer repository-enforced permissions, tests, CI, branch isolation, and tool restrictions over long repeated warning prose.
+Prefer repository-enforced permissions, tests, CI, scripts, hooks, branch/workspace isolation, and tool restrictions over long repeated warning prose.

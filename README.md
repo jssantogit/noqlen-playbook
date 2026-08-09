@@ -24,7 +24,7 @@ Make the smallest **complete and coherent** change that satisfies the request. A
 
 ### Verify
 
-Run validation proportional to the behavior changed. Use the cheapest evidence that can realistically catch the likely regression. Never claim completion without evidence. If validation cannot run, report the reason and residual risk.
+Run validation proportional to the behavior changed. Use the cheapest evidence that can realistically catch the likely regression. When cheap and relevant, observe the actual outcome instead of inferring success only from the implementation or agent summary.
 
 ### Review
 
@@ -46,17 +46,22 @@ See [`docs/workflow.md`](docs/workflow.md) for decision rules.
 ## Supporting Rules
 
 - **Isolation Rule** — isolate external, unsafe, nondeterministic, expensive, slow, or CI-unavailable dependencies during verification using the lightest useful fixture, stub, fake, emulator, temporary state, or deterministic substitute.
+- **Delegation Rule** — default to one capable agent. Delegate or parallelize only when separate context or independent execution saves more work than coordination costs. Concurrent writers should use isolated workspaces when interference is possible; one coordinator owns integration and final verification.
+- **Harness Feedback Rule** — when the same correction, failure, or instruction recurs, improve the environment instead of repeating prompt prose. Choose the lightest durable fix that matches the problem: executable guardrail, reusable skill/procedure, discoverable documentation, or prompt instruction.
 - **Handoff Trigger** — persist a handoff only when work is interrupted/transferred and repository state alone is insufficient for safe continuation.
 
-Neither rule must be declared in routine output.
+None of these rules must be declared in routine output.
 
 ## Principles
 
-- Use the smallest safe context.
-- Prefer executable guardrails over repeated prompt warnings.
+- Use the smallest safe context and load deeper material only when needed.
+- Prefer executable guardrails over repeated prompt warnings when the rule is genuinely mechanical.
 - Validate before claiming done.
+- Prefer observable outcomes over agent claims when direct observation is cheap and relevant.
 - Review the actual diff, not only the agent summary.
 - Keep changes focused; do not rewrite unrelated code opportunistically.
+- Default to one capable agent; split work for feedback, ownership, parallel independence, or scrutiny only when the benefit exceeds coordination cost.
+- Parallelize independent work, not a serial chain of artificial agent roles.
 - Use risk-based testing.
 - Use synthetic fixtures instead of real private libraries or user data in automated tests.
 - User-authorized local/private data may be inspected transiently when the task requires it; minimize what is persisted or reproduced.
@@ -69,17 +74,18 @@ Neither rule must be declared in routine output.
 - Never create an interface only so a fake can exist.
 - Use ADRs only for decisions that are architectural and meaningfully hard to reverse.
 - Diff size alone is not a reason for formal audit or branch isolation.
+- Add durable agent guidance from observed need, not speculation.
 
 ## Documentation Map
 
 Read only what the task needs:
 
-- [`docs/workflow.md`](docs/workflow.md) — core loop, escalations, Isolation Rule, and Handoff Trigger.
+- [`docs/workflow.md`](docs/workflow.md) — core loop, escalations, delegation, harness feedback, isolation, and handoff rules.
 - [`docs/safety.md`](docs/safety.md) — authorization, destructive operations, private data, repository hygiene, security boundaries.
-- [`docs/testing.md`](docs/testing.md) — risk-based validation, isolation, fixtures, fakes, and dry-run testing.
+- [`docs/testing.md`](docs/testing.md) — risk-based validation, outcome verification, isolation, fixtures, fakes, and dry-run testing.
 - [`docs/architecture.md`](docs/architecture.md) — boundaries, public APIs, dependencies, ADR criteria.
 - [`docs/release.md`](docs/release.md) — release preparation and publishing controls.
-- [`docs/tooling.md`](docs/tooling.md) — optional agent/tooling guidance; tooling is not part of the core workflow.
+- [`docs/tooling.md`](docs/tooling.md) — capability-oriented guidance for skills, subagents, workspaces, permissions, hooks, external tools, context, and automation.
 
 ## Conditional Templates
 
