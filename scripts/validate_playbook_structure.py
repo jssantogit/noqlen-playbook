@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the essential Noqlen Playbook V2 structure and canonical workflow."""
+"""Validate the essential Noqlen Playbook V2.1 structure and canonical workflow."""
 
 from pathlib import Path
 import sys
@@ -33,20 +33,30 @@ REQUIRED_DIRS = [
 REQUIRED_TEXT = {
     "README.md": [
         "Inspect -> Implement -> Verify -> Review",
-        "Triggered Gates",
+        "Triggered Escalations",
+        "Isolation Rule",
+        "Handoff Trigger",
+        "Do the work; do not narrate the process.",
     ],
     "docs/workflow.md": [
-        "Plan Gate",
-        "Design Gate",
-        "Safety Gate",
-        "Fake Gate",
-        "Audit Gate",
-        "Handoff Gate",
+        "The four escalations are **Plan, Design, Safety, and Audit**.",
+        "Isolation Rule",
+        "Handoff Trigger",
         "Do not create an interface only so a fake can exist.",
+        "Do not enumerate inactive gates.",
+        "Diff size alone does not activate Audit.",
+    ],
+    "docs/safety.md": [
+        "Implementation Versus Real Execution",
+        "does **not** itself require user confirmation",
+    ],
+    "docs/testing.md": [
+        "Isolation is a verification technique, not a workflow phase or gate that must be declared.",
     ],
     "AGENTS.md": [
         "Validate changed behavior before claiming completion.",
         "Do not invent an abstraction only to create a fake.",
+        "Diff size alone does not require formal audit.",
     ],
 }
 
@@ -57,6 +67,31 @@ LEGACY_PATHS = [
 ]
 
 LEGACY_NUMBERED_DOCS = [f"docs/{number:02d}-" for number in range(20)]
+
+FORBIDDEN_ACTIVE_PHRASES = [
+    "Triggered Gates",
+    "Plan Gate",
+    "Design Gate",
+    "Safety Gate",
+    "Fake Gate",
+    "Audit Gate",
+    "Handoff Gate",
+]
+
+SCAN_ROOTS = ["README.md", "AGENTS.md", "docs", "templates", "examples"]
+
+
+def iter_active_text_files(root: Path):
+    for relative in SCAN_ROOTS:
+        path = root / relative
+        if path.is_file():
+            yield path
+            continue
+        if not path.is_dir():
+            continue
+        for child in path.rglob("*"):
+            if child.is_file() and child.suffix.lower() in {".md", ".txt", ".py", ".yml", ".yaml", ".json", ".jsonc"}:
+                yield child
 
 
 def main() -> int:
@@ -93,14 +128,21 @@ def main() -> int:
             if any(relative.startswith(prefix) for prefix in LEGACY_NUMBERED_DOCS):
                 failures.append(f"legacy numbered workflow doc still present: {relative}")
 
+    for path in iter_active_text_files(root):
+        text = path.read_text(encoding="utf-8")
+        relative = path.relative_to(root)
+        for phrase in FORBIDDEN_ACTIVE_PHRASES:
+            if phrase in text:
+                failures.append(f"legacy gate terminology in {relative}: {phrase!r}")
+
     if failures:
-        print("Playbook V2 validation failures:")
+        print("Playbook V2.1 validation failures:")
         for failure in failures:
             print(f"- {failure}")
-        print("FAIL: playbook does not match the V2 essential structure.")
+        print("FAIL: playbook does not match the V2.1 essential structure.")
         return 1
 
-    print("PASS: playbook matches the V2 essential structure.")
+    print("PASS: playbook matches the V2.1 essential structure.")
     return 0
 
 
