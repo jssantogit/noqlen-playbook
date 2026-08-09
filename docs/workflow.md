@@ -199,38 +199,41 @@ See `docs/testing.md`.
 
 ## Delegation Rule
 
-Delegate when **separate context or independent execution saves more work than coordination costs**.
+**Default to one capable agent.** Delegate only when separate context or independent execution saves more work than coordination costs.
 
 Good reasons include:
 
 - independent read-only investigation can run in parallel;
 - several independent implementation units can progress concurrently;
 - a focused specialist can review a security, API, migration, or test concern without carrying the full implementation context;
-- a long exploration would pollute the main agent's working context and can be summarized cleanly.
+- a long exploration would materially pollute the coordinator's working context and can be summarized cleanly.
 
 Rules:
 
 - keep one coordinator responsible for the final integrated result;
 - parallelize independent work, not a serial chain of artificial roles;
 - read-only parallel investigation can share the same repository state;
-- concurrent writers should use isolated workspaces, worktrees, branches, or equivalent isolation;
+- concurrent writers should use isolated workspaces, worktrees, branches, or equivalent isolation when interference is possible;
 - integrate and verify the combined result after parallel work;
-- do not delegate merely because a task is large or because multiple agents are available.
+- do not delegate merely because a task is large, long-running, or because multiple agents are available;
+- avoid delegation when workers would repeatedly depend on the same rapidly changing shared state or on each other's unfinished output.
 
-A `planner -> coder -> tester -> reviewer` chain is not automatically better than one capable agent. Add another agent only when it reduces elapsed time, context interference, or residual risk enough to justify coordination overhead.
+A `planner -> coder -> tester -> reviewer` chain is not automatically better than one capable agent. Add another agent only when the expected benefit is identifiable before delegation: lower elapsed time, cleaner context, independent scrutiny, or safer isolation.
 
 ## Harness Feedback Rule
 
 When the **same** correction, failure mode, or instruction keeps recurring, improve the working environment instead of repeatedly expanding prompts.
 
-Prefer this order when applicable:
+Choose the **lightest durable fix** that matches the recurring problem:
 
-1. **Executable guardrail** — test, lint rule, type check, permission, hook, script, CI check, schema, sandbox, or deterministic validation.
-2. **Reusable skill/procedure** — a focused workflow that should be loaded only when the task needs it.
-3. **Discoverable documentation** — durable knowledge the agent can retrieve when relevant.
-4. **Prompt instruction** — one-off or task-specific guidance that does not justify permanent machinery.
+- **Executable guardrail** — when a deterministic rule can be checked or enforced cheaply with a test, lint rule, type check, permission, hook, script, CI check, schema, sandbox, or validation;
+- **Reusable skill/procedure** — when a multi-step procedure repeats and benefits from on-demand instructions or scripts;
+- **Discoverable documentation** — when the missing piece is durable knowledge rather than executable policy;
+- **Prompt instruction** — when guidance is one-off, task-specific, or too cheap to justify permanent machinery.
 
-Do not add machinery after every single mistake. Improve the harness when the failure is recurring, costly, safety-relevant, or likely enough that automation clearly pays for itself.
+There is no requirement to prefer a hook, lint rule, or script over a simpler skill or document when the simpler fix solves the actual recurring problem.
+
+Do not add machinery after every single mistake. Improve the harness when the failure is recurring, costly, safety-relevant, or likely enough that the maintenance cost clearly pays for itself.
 
 Do not let harness cleanup hijack the current task. If the improvement is not necessary now and would expand scope materially, capture it for follow-up rather than performing an unrelated refactor.
 
@@ -263,11 +266,11 @@ Core loop. Add/update tests if the behavior can regress. No isolation or delegat
 
 ### Investigate three unrelated failing test groups
 
-Use read-only/diagnostic delegation when the failures are independent enough to investigate in parallel. One coordinator integrates the conclusions and decides what to change.
+Use read-only/diagnostic delegation when the failures are independent enough to investigate in parallel and doing so is expected to save meaningful elapsed time or context. One coordinator integrates the conclusions and decides what to change.
 
 ### Implement two independent adapters at the same time
 
-Delegation can help if each adapter has a stable boundary and can be implemented/tested independently. Concurrent writers should use isolated workspaces. Re-run integration validation after combining them.
+Delegation can help if each adapter has a stable boundary and can be implemented/tested independently. Concurrent writers should use isolated workspaces when interference is possible. Re-run integration validation after combining them.
 
 ### Add a new provider API behind an existing service boundary
 
