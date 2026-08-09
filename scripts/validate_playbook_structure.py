@@ -70,9 +70,9 @@ REQUIRED_TEXT = {
     "docs/tooling.md": [
         "Capabilities Before Brands",
         "Skills And Reusable Procedures",
-        "Subagents And Delegation",
+        "Subagents And Workspaces",
         "Permissions, Sandboxes, And Hooks",
-        "Runtime And Outcome Observability",
+        "Search, Context, And Observability",
         "Harness Feedback",
     ],
     "AGENTS.md": [
