@@ -1,13 +1,17 @@
 # Feature Issue
 
-## Problem
+## Problem / Goal
 
-## Goal
+What should become possible or better?
 
-## Non-goals
+## Expected Behavior
 
-## Expected behavior
+What should a user or caller observe when this is complete?
 
-## Risks
+## Constraints (if any)
 
-## Suggested context level
+Only constraints that materially affect implementation, compatibility, or safety.
+
+## Risks / Escalations (if already apparent)
+
+Optional. Mention concrete Plan, Design, Safety, or Audit concerns only when they are already apparent. Do not classify routine work preemptively.

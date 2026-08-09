@@ -1,35 +1,38 @@
 # AGENTS
 
-- Read the relevant context before editing.
-- Work only on the requested block.
-- Do not perform broad rewrites.
-- Do not touch unrelated files.
-- Respect allowed and forbidden file lists.
-- Do not expose secrets, personal paths, or private data.
-- Do not use real music libraries in tests.
-- Prefer fake fixtures and dry-run flows.
-- Validate before claiming done.
-- Report touched files and commands run.
-- Always declare Tool Mode when tooling affects the block.
-- Do not install or configure agent tooling unless explicitly requested.
-- When asked to bootstrap an optimized environment, read the environment docs first.
-- Prefer user/global tool configuration over project-local config.
-- Do not commit local agent configs.
-- Do not create or commit `opencode.json` unless explicitly approved.
-- Do not commit `.opencode/`, `.serena/`, `.mcp/`, `.claude/`, `.cursor/`, `.windsurf/`, or `RTK.md`.
-- Do not start implementation in the same block as environment setup unless explicitly requested.
-- Report installed tools, skipped tools, commands run, configs touched, and verification results.
-- Never claim a tool is installed without running a verification command or clearly marking it as unverified.
-- If a tool requires manual login, shell restart, PATH change, or user confirmation, report it and stop.
-- If using compressed or sandboxed output, preserve raw evidence when relevant.
-- Semantic editing tools must obey allowed and forbidden files.
-- Caveman/terse-output is forbidden for specs, ADRs, audits, handoffs, releases, and public docs.
-- Environment bootstrap and product implementation should be separate blocks unless explicitly requested.
-- Stop after the requested block.
+These are repository invariants for AI-assisted work. Keep them short and durable.
 
-## Git Rules
+## Work Discipline
 
-- Do not use `git add .`.
-- Stage files explicitly.
-- Do not force push.
-- Do not rewrite history unless explicitly requested.
+- Inspect the relevant code and current repository state before editing.
+- Make the smallest complete and coherent change that satisfies the request.
+- Do not perform unrelated rewrites or refactors.
+- Do not keep a diff artificially small at the cost of correctness or maintainability.
+- Respect explicit user scope and repository boundaries.
+- Validate changed behavior before claiming completion.
+- Review the final diff for scope drift, accidental changes, and residual risk.
+- If validation cannot run, report why and what remains unverified.
+- Do the workflow; do not narrate step names, inactive escalations, risk tiers, Tool Mode, or process metadata unless they materially help the user or reviewer.
+
+## Safety
+
+- Do not commit or unnecessarily reproduce secrets, credentials, tokens, personal paths, private data, lyrics, fingerprints, or real music-library data.
+- User-authorized private/local data may be inspected transiently when the task requires it; minimize what is copied into durable or shareable artifacts.
+- Automated tests must use synthetic data or sanitized fixtures, not a real user music library.
+- Implement and test dangerous capabilities in isolated state; do not require user confirmation merely to run safe tests.
+- An explicit user request for a named action on a sufficiently defined target counts as authorization for that action; do not ask for the same confirmation twice.
+- Ask again only if target/scope is materially ambiguous, the action expands beyond authorization, consequences materially increase, or the tool/platform requires confirmation.
+- Before a high-impact real-state mutation that has not already been authorized, require explicit apply intent.
+- Prefer dry-run, preview, temporary workspaces, backups, or reversible operations only when they reduce a concrete failure mode.
+- Do not publish, deploy, merge, release, force push, or rewrite history unless explicitly requested.
+- Keep local agent/tool configuration and generated agent state untracked unless an explicitly approved sanitized example is the task.
+
+## Architecture And Testing
+
+- Follow existing boundaries unless changing them is part of the request.
+- Keep heavy domain logic out of UI screens and thin app shells.
+- Do not invent an abstraction only to create a fake.
+- Isolate real external or nondeterministic dependencies during verification when direct use would be unsafe, impractical, flaky, expensive, or dependent on private state.
+- Use ADRs only for architectural decisions that are meaningfully hard to reverse.
+- Routine edits to an established public API do not require an ADR unless they change durable API strategy or boundary policy.
+- Diff size alone does not require formal audit or branch isolation.

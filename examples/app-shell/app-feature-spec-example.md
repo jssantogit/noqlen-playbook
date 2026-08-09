@@ -1,30 +1,23 @@
-# App Feature Spec Example: Display Local Service Readiness Status
+# App Example: Readiness Status With A Real Boundary
 
-## App screen goal
+This example shows where the **Isolation Rule** is useful. It is not a required starting point for every app feature.
 
-Show whether a local service is ready, starting, unavailable, or in error.
+## Goal
 
-## State model
+Show whether an already-defined local service boundary is unknown, starting, ready, unavailable, or in error.
 
-- `unknown`
-- `starting`
-- `ready`
-- `unavailable`
-- `error`
+## Why Isolation Helps Here
 
-## Fake provider
+The app consumes a real service-readiness boundary. Starting and failing the real local service in every UI test would be slower and less deterministic, so tests use a lightweight fake implementation of the **existing** readiness boundary.
 
-Use a fake readiness provider that returns deterministic states for tests and demos.
+The boundary exists because the app and service are separate components — not because the playbook requires a fake.
 
-## Contract boundary
+Use the lightest substitute that proves state behavior. If a fixture or stub is enough, do not create a richer fake.
 
-The app depends on a public readiness contract, not internal service implementation details.
+## Verification
 
-## Validation
+- test state rendering with deterministic readiness states;
+- verify safe error text does not expose private paths or sensitive data;
+- run the relevant integration check against the real boundary separately when practical.
 
-- Validate state transitions with fake provider tests.
-- Validate UI errors do not expose private paths or sensitive data.
-
-## Audit
-
-Audit app/core boundaries, state behavior, and data safety before integration with a real provider.
+Design is relevant only if the durable readiness contract or compatibility strategy changes. Audit is relevant only when an important public/security boundary leaves high-impact residual risk after normal validation and diff review.

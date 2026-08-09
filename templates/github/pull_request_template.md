@@ -2,23 +2,23 @@
 
 ## Summary
 
-## Related spec/ADR
+What changed and why?
 
-## Risk level
+## Validation
 
-## Touched areas
+What evidence shows the changed behavior works?
 
-## Validation commands
+## Escalations / Supporting Rules (only if relevant)
 
-## Audit status
+Mention Plan, Design, Safety, Audit, Isolation, or Handoff only when the reviewer needs that context. Do not list inactive items or turn this into a process checklist.
 
-## Screenshots if UI
+## Notes / Residual Risk
+
+Only unresolved information a reviewer needs.
 
 ## Checklist
 
-- [ ] No secrets.
-- [ ] No personal paths.
-- [ ] No real music library in tests.
-- [ ] No unrelated files.
-- [ ] Validation run.
-- [ ] Docs updated if needed.
+- [ ] Diff reviewed for unrelated changes.
+- [ ] Relevant validation passed or remaining gaps are stated.
+- [ ] No secrets, personal paths, private data, or real music-library data were introduced.
+- [ ] Docs updated only where behavior or durable guidance changed.
