@@ -38,34 +38,31 @@ Use a skill/procedure for a workflow that repeats, benefits from reusable instru
 
 Keep skills focused and load deeper instructions/scripts/references only when needed.
 
-Use this placement rule:
-
-```text
-executable rule -> reusable skill -> discoverable docs -> prompt instruction
-```
+Choose placement by the type of problem, not by a fixed hierarchy:
 
 - durable invariant -> `AGENTS.md`;
 - repeated procedure -> skill;
-- deterministic constraint -> code/tooling when practical;
+- deterministic constraint -> code/tooling when practical and cheaper to maintain;
+- durable knowledge -> discoverable docs;
 - one-off guidance -> task prompt.
 
-Do not create a skill for every task type.
+Use the lightest durable mechanism that solves the actual recurring problem. Do not create a skill, hook, lint rule, or script merely because the category exists.
 
 ## Subagents And Workspaces
 
-Delegate when separate context or independent execution materially reduces elapsed time, context interference, or residual risk.
+**Default to one capable agent.** Delegate only when separate context or independent execution materially reduces elapsed time, context interference, or residual risk.
 
 Good uses include parallel read-only investigation, focused specialist review, independent failure analysis, and independent implementation units with stable boundaries.
 
 Keep one coordinator responsible for scope, integration, and final verification.
 
-Do not create a fixed `planner -> coder -> tester -> reviewer` pipeline for routine work.
+Do not create a fixed `planner -> coder -> tester -> reviewer` pipeline for routine work, and avoid delegation when workers depend heavily on the same rapidly changing shared state.
 
 Concurrent writers should use isolated workspaces/worktrees/branches when interference is possible. Read-only parallel agents generally do not need them. Re-validate the combined state after integration.
 
 ## Permissions, Sandboxes, And Hooks
 
-Prefer deterministic controls over repeated warning prose.
+Prefer deterministic controls over repeated warning prose when a rule is genuinely mechanical.
 
 Examples:
 
@@ -75,7 +72,7 @@ Examples:
 - run relevant lint/test checks;
 - protect production, publish, deploy, and history actions behind explicit permissions.
 
-Low-risk authorized work should remain fluid. Add hooks or approval boundaries only where they reduce a concrete failure mode.
+Low-risk authorized work should remain fluid. Add hooks or approval boundaries only where they reduce a concrete failure mode and are cheaper than the failures they prevent.
 
 ## Search, Context, And Observability
 
@@ -97,10 +94,13 @@ External tools expand both capability and trust surface.
 - prefer read-only access for exploration;
 - minimize filesystem/network/write permissions;
 - keep credentials and active private config out of the repository;
-- inspect third-party skills, plugins, MCP servers, and agent packages before trusting them;
+- review untrusted or newly adopted third-party skills, plugins, MCP servers, and agent packages before relying on them;
+- re-review when provenance, version, permissions, or behavior changes materially;
 - pin/version durable dependencies when reproducibility matters.
 
-Treat them as software dependencies, not harmless prompt text.
+Do **not** re-audit an unchanged, already-approved dependency on every routine use. Treat adoption and material updates as the trust boundary.
+
+Treat external agent tooling as software dependencies, not harmless prompt text.
 
 ## Background Automation
 
@@ -116,11 +116,9 @@ Preserve raw or reproducible evidence for important validation failures, securit
 
 ## Harness Feedback
 
-When the same friction recurs, improve the harness instead of permanently expanding prompts:
+When the same friction recurs, choose the lightest durable fix that matches the cause:
 
-- wrong command repeatedly -> stable script/target;
-- repeated architecture violation -> structural test/lint;
-- repeated risky action -> permission/hook;
+- deterministic failure -> test/lint/script/permission/hook when cheap to maintain;
 - repeated procedure -> focused skill;
 - repeated missing knowledge -> discoverable docs;
 - one-off instruction -> prompt.
