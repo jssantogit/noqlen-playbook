@@ -37,6 +37,7 @@ REQUIRED_TEXT = {
         "Isolation Rule",
         "Handoff Trigger",
         "Do the work; do not narrate the process.",
+        "do not ask for the same confirmation twice",
     ],
     "docs/workflow.md": [
         "The four escalations are **Plan, Design, Safety, and Audit**.",
@@ -47,6 +48,9 @@ REQUIRED_TEXT = {
         "Diff size alone does not activate Audit.",
     ],
     "docs/safety.md": [
+        "Authorization And Apply Intent",
+        "Read-only inspection of user-authorized real data does not by itself require a confirmation pause.",
+        "Do not ask the user to confirm the same action twice.",
         "Implementation Versus Real Execution",
         "does **not** itself require user confirmation",
     ],
@@ -55,8 +59,9 @@ REQUIRED_TEXT = {
     ],
     "AGENTS.md": [
         "Validate changed behavior before claiming completion.",
+        "do not ask for the same confirmation twice.",
         "Do not invent an abstraction only to create a fake.",
-        "Diff size alone does not require formal audit.",
+        "Diff size alone does not require formal audit or branch isolation.",
     ],
 }
 
