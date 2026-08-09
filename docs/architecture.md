@@ -1,6 +1,6 @@
 # Architecture
 
-Architecture guidance is activated by the **Design Gate** in `workflow.md` when a decision is durable, cross-cutting, public, or expensive to reverse.
+Architecture guidance is activated by the **Design** escalation when the work makes a durable, cross-cutting, public, or expensive-to-reverse architectural decision.
 
 ## Boundaries
 
@@ -14,25 +14,29 @@ Use explicit contracts where independent consumers need a stable boundary.
 
 A contract is justified when it communicates durable behavior between modules, repositories, services, or app/core layers. It is not justified merely to satisfy a workflow template or to make a fake possible.
 
-When changing a public contract, consider:
+A routine edit to an existing public API does not automatically activate Design. Design is activated when the work changes durable API **strategy**, compatibility policy, versioning direction, ownership, or a boundary that future consumers will rely on.
+
+When changing a durable public contract or strategy, consider:
 
 - compatibility and migration impact;
 - consumer assumptions;
 - error semantics;
 - versioning or rollout strategy;
-- tests at the boundary.
+- tests at the behavior boundary.
 
 ## Dependencies
 
-Adding a new runtime dependency can activate the Design Gate when it creates meaningful maintenance, security, packaging, or operational cost.
+Adding a new runtime dependency can activate Design when it creates meaningful maintenance, security, packaging, or operational cost.
 
 Prefer existing capabilities or small local code when they solve the need clearly. Do not add a dependency solely because it makes an agent implementation easier.
+
+A small, replaceable dependency does not require an ADR merely because it is new; persistence and consequence matter more than novelty.
 
 ## Data And Storage
 
 Storage format, persistent schema, migration strategy, and path ownership are architectural when downstream code or user data will depend on them.
 
-These changes often activate both Design and Safety gates.
+These changes often activate both Design and Safety.
 
 ## ADR Criteria
 
@@ -52,7 +56,7 @@ Typical ADR topics:
 - substantial new runtime dependencies;
 - cross-repository contracts.
 
-Do not write an ADR for naming, local refactors, obvious implementation details, or easily reversible choices.
+Do not write an ADR for naming, local refactors, routine public API edits within an established strategy, obvious implementation details, or easily reversible choices.
 
 Use `templates/adr/adr-template.md` when an ADR is warranted.
 
