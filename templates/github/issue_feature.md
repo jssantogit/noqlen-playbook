@@ -12,6 +12,6 @@ What should a user or caller observe when this is complete?
 
 Only constraints that materially affect implementation, compatibility, or safety.
 
-## Risks / Gates (if known)
+## Risks / Escalations (if already apparent)
 
-Optional. Mention concrete Design, Safety, Fake, or Audit concerns only when they are already apparent.
+Optional. Mention concrete Plan, Design, Safety, or Audit concerns only when they are already apparent. Do not classify routine work preemptively.
