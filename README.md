@@ -58,22 +58,24 @@ Neither rule must be declared in routine output.
 - Review the actual diff, not only the agent summary.
 - Keep changes focused; do not rewrite unrelated code opportunistically.
 - Use risk-based testing.
-- Use synthetic fixtures instead of real private libraries or user data.
-- Implement and test dangerous capabilities safely in isolated state; require explicit apply intent before performing high-impact actions against real state when not already authorized.
-- Use dry-run or preview behavior before destructive real-state operations when practical.
-- Never expose secrets, credentials, personal paths, private data, lyrics, fingerprints, or real music-library data.
+- Use synthetic fixtures instead of real private libraries or user data in automated tests.
+- User-authorized local/private data may be inspected transiently when the task requires it; minimize what is persisted or reproduced.
+- An explicit user request for a named action on a sufficiently defined target counts as authorization; do not ask for the same confirmation twice.
+- Implement and test dangerous capabilities safely in isolated state; require explicit apply intent only before high-impact real-state actions that have not already been authorized.
+- Use dry-run, preview, backup, or other safeguards only when they reduce a concrete failure mode.
+- Do not commit or unnecessarily reproduce secrets, credentials, personal paths, private data, lyrics, fingerprints, or real music-library data.
 - Keep heavy domain logic out of UI screens and thin app shells.
 - Create abstractions for product or architectural reasons, not merely to satisfy a testing ritual.
 - Never create an interface only so a fake can exist.
 - Use ADRs only for decisions that are architectural and meaningfully hard to reverse.
-- Diff size alone is not a reason for formal audit.
+- Diff size alone is not a reason for formal audit or branch isolation.
 
 ## Documentation Map
 
 Read only what the task needs:
 
 - [`docs/workflow.md`](docs/workflow.md) — core loop, escalations, Isolation Rule, and Handoff Trigger.
-- [`docs/safety.md`](docs/safety.md) — destructive operations, private data, repository hygiene, security boundaries.
+- [`docs/safety.md`](docs/safety.md) — authorization, destructive operations, private data, repository hygiene, security boundaries.
 - [`docs/testing.md`](docs/testing.md) — risk-based validation, isolation, fixtures, fakes, and dry-run testing.
 - [`docs/architecture.md`](docs/architecture.md) — boundaries, public APIs, dependencies, ADR criteria.
 - [`docs/release.md`](docs/release.md) — release preparation and publishing controls.
@@ -92,8 +94,7 @@ Do not create a template artifact when repository state, the task description, a
 ## Git And Repository Safety
 
 - Do not force push or rewrite history unless explicitly requested.
-- Do not publish, deploy, merge, or release unless the user requested that action.
-- Prefer explicit staging over broad staging when working interactively.
+- Do not publish, deploy, merge, or release unless the user requested that action; that explicit request is the authorization for the named action.
 - Keep local agent configuration, credentials, generated state, and personal paths out of the repository.
 
 ## Validation
