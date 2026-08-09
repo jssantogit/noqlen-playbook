@@ -8,9 +8,9 @@ What changed and why?
 
 What evidence shows the changed behavior works?
 
-## Gates Activated (if any)
+## Escalations / Supporting Rules (only if relevant)
 
-Only list Plan, Design, Safety, Fake, Audit, or Handoff gates that were actually relevant. Leave empty for ordinary low-risk work.
+Mention Plan, Design, Safety, Audit, Isolation, or Handoff only when the reviewer needs that context. Do not list inactive items or turn this into a process checklist.
 
 ## Notes / Residual Risk
 
